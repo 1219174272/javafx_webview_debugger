@@ -15,9 +15,8 @@ public class DevToolsDebuggerServer {
     private static Debugger debugger;
     private static Server server;
 
-    public static void startDebugServer(Debugger debugger) throws Exception {
+    public static void startDebugServer(Debugger debugger, int debuggerPort) throws Exception {
 
-        int debuggerPort = 51742;
         server = new Server(debuggerPort);
 
         debugger.setEnabled(true);
@@ -27,7 +26,7 @@ public class DevToolsDebuggerServer {
         contextHandler.setContextPath("/");
 
         ServletHolder devToolsHolder = new ServletHolder(new DevToolsWebSocketServlet());
-        contextHandler.addServlet(devToolsHolder, "/devtools/page/1");
+        contextHandler.addServlet(devToolsHolder, "/");
 
         server.setHandler(contextHandler);
         server.start();
@@ -49,7 +48,7 @@ public class DevToolsDebuggerServer {
             }
         });
 
-        String remoteUrl = "chrome-devtools://devtools/bundled/inspector.html?ws=localhost:51742/devtools/page/1";
+        String remoteUrl = "chrome-devtools://devtools/bundled/inspector.html?ws=localhost:" + debuggerPort + "/";
         System.out.println("To debug open chrome and load next url: " + remoteUrl);
     }
 
