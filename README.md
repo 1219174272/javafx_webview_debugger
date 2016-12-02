@@ -15,3 +15,18 @@ For a proper shutdown you have to call following when exiting to stop in backgro
 ```java
 DevToolsDebuggerServer.stopDebugServer();
 ```
+
+## Installing the library
+In addition to the possibility of downloading and importing the code, one can use following maven dependency to install this library:
+
+```
+repositories {
+			maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+      compile 'com.github.mohamnag:javafx_webview_debugger:-SNAPSHOT'
+}
+```
+
+Above snippet is the gradle version but you can find relevant snippets for maven, ant and ... here in (jitpack)[https://jitpack.io/#mohamnag/javafx_webview_debugger].
