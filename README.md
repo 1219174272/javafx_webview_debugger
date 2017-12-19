@@ -1,16 +1,57 @@
 # JavaFX WebView debugger
 Based on the solution found by Bosko Popovic found under [this question](http://stackoverflow.com/questions/9398879/html-javascript-debugging-in-javafx-webview/34444807#34444807).
 
-To enable debugging on a chosen WebView, you have to add following code using its `webEngine`:
+Using debugger is done in three main steps:
+ 1. Starting debug server
+ 1. Connecting chrome debugger 
+ 1. Clean up
+
+### Starting debug server
+If you are using Java up to version 8, to enable debugging on a chosen WebView, you have to add following code using its `webEngine`:
 ```java
 DevToolsDebuggerServer.startDebugServer(webEngine.impl_getDebugger(), 51742);
 ```
 
+`WebEngine.impl_getDebugger()` is an internal API and is subject to change which is happened in Java 9. So if you are using Java 9, you need to use following code instead to start the debug server:
+
+```java
+Class webEngineClazz = WebEngine.class;
+
+Field debuggerField = webEngineClazz.getDeclaredField("debugger");
+debuggerField.setAccessible(true);
+
+Debugger debugger = (Debugger) debuggerField.get(webView.getEngine());
+DevToolsDebuggerServer.startDebugServer(debugger, 51742);
+```
+
+For this to work, you have to pass this parameter to Java compiler: `--add-exports javafx.web/com.sun.javafx.scene.web=ALL-UNNAMED`. 
+
+As examples, this can be done for Maven as follows:
+```xml
+       <plugin>
+           <groupId>org.apache.maven.plugins</groupId>
+           <artifactId>maven-compiler-plugin</artifactId>
+           <version>3.7.0</version>
+           <configuration>
+               <source>9</source>
+               <target>9</target>
+               <compilerArgs>
+                   <arg>--add-exports</arg>
+                   <arg>javafx.web/com.sun.javafx.scene.web=ALL-UNNAMED</arg>
+               </compilerArgs>
+           </configuration>
+        </plugin>
+```
+
+or for IntelliJ under **Additional command line parameters** in **Preferences > Build, Execution, Deployment > Compiler > Java Compiler**.
+
+### Connecting chrome debugger
 Then you only need to open following URL in a chrome browser:
 ```
 chrome-devtools://devtools/bundled/inspector.html?ws=localhost:51742/
 ```
 
+### Clean up
 For a proper shutdown you have to call following when exiting to stop in background running server:
 ```java
 DevToolsDebuggerServer.stopDebugServer();
