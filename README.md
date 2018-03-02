@@ -6,6 +6,8 @@ Using debugger is done in three main steps:
  1. Connecting chrome debugger 
  1. Clean up
 
+> There is a more advanced OS library done by Vladimir Schneider for achieving the goal of debugging a JavaFX WebView, which adds lots of missing pieces. Head over [here](https://github.com/vsch/Javafx-WebView-Debugger) to learn more about it.
+
 ### Starting debug server
 If you are using Java up to version 8, to enable debugging on a chosen WebView, you have to add following code using its `webEngine`:
 ```java
